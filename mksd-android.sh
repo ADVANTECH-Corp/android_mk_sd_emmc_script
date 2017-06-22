@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 #Check whether it is android?
@@ -15,6 +16,7 @@ CACHE_SIZE=512
 RECOVERY_ROM_SIZE=16
 DEVICE_SIZE=8
 MISC_SIZE=6
+CUST_SIZE=128
 DATAFOOTER_SIZE=2
 
 help() {
@@ -88,7 +90,7 @@ seprate=40
 total_size=`${busybox} fdisk -l ${node}|${busybox} sed -n '2p'|${busybox} cut -d ' ' -f 5`
 total_size=`${busybox} expr ${total_size} / 1024`
 boot_rom_sizeb=`${busybox} expr ${BOOT_ROM_SIZE} + ${BOOTLOAD_RESERVE}`
-extend_size=`${busybox} expr ${SYSTEM_ROM_SIZE} + ${CACHE_SIZE} + ${DEVICE_SIZE} + ${MISC_SIZE} + ${DATAFOOTER_SIZE} + ${seprate}`
+extend_size=`${busybox} expr ${SYSTEM_ROM_SIZE} + ${CACHE_SIZE} + ${DEVICE_SIZE} + ${MISC_SIZE} + ${DATAFOOTER_SIZE} + ${CUST_SIZE} + ${seprate}`
 data_size=`${busybox} expr ${total_size} - ${boot_rom_sizeb} - ${RECOVERY_ROM_SIZE} - ${extend_size}`
 
 # create partitions
@@ -101,6 +103,7 @@ if [ "${cal_only}" -eq "1" ]; then
 	echo "DATA   : ${data_size}MB" >> $show
 	echo "MISC   : ${MISC_SIZE}MB" >> $show
 	echo "DEVICE : ${DEVICE_SIZE}MB" >> $show
+	echo "CUST   : ${CUST_SIZE}MB" >> $show
 	echo "DATAFOOTER : ${DATAFOOTER_SIZE}MB" >> $show
 	cat $show
 	rm $show
@@ -188,14 +191,14 @@ echo n >> $tmp
 echo e >> $tmp
 echo 3 >> $tmp
 echo +54M >> $tmp
-echo +1376M >> $tmp
+echo +1680M >> $tmp
 echo n >> $tmp
 echo p >> $tmp
-echo +1432M >> $tmp
+echo +1750M >> $tmp
 echo "" >> $tmp
 echo n >> $tmp
 echo "" >> $tmp
-echo +800M >> $tmp
+echo +1000M >> $tmp
 echo n >> $tmp
 echo "" >> $tmp
 echo +500M >> $tmp
@@ -205,6 +208,9 @@ echo +12M >> $tmp
 echo n >> $tmp
 echo "" >> $tmp
 echo +12M >> $tmp
+echo n >> $tmp
+echo "" >> $tmp
+echo +128M >> $tmp
 echo n >> $tmp
 echo "" >> $tmp
 echo +12M >> $tmp
